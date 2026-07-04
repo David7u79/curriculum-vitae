@@ -1,0 +1,267 @@
+---
+import {
+  profile,
+  featuredSkills,
+  skills,
+  softSkills,
+  achievements,
+  education,
+  certifications,
+  experience,
+  projects,
+} from '../data/cv';
+import { buildJsonLd } from '../lib/jsonld';
+import '../styles/cv-theme.css';
+import '../styles/cv-themes.css';
+
+const jsonLd = buildJsonLd({
+  profile,
+  featuredSkills,
+  skills,
+  softSkills,
+  achievements,
+  education,
+  certifications,
+  experience,
+  projects,
+});
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{profile.name} — {profile.role}</title>
+    <meta name="description" content={profile.summary} />
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body>
+    <header class="sheet">
+      <span class="corner tl" aria-hidden="true"></span>
+      <span class="corner tr" aria-hidden="true"></span>
+      <span class="corner bl" aria-hidden="true"></span>
+      <span class="corner br" aria-hidden="true"></span>
+
+      <div class="eyebrow-row">
+        <p class="eyebrow">Curriculum · {profile.location}</p>
+        <div class="no-print header-actions">
+          <select id="theme-select" class="lang-btn" title="Estilo">
+            <option value="clasico">Clásico</option>
+            <option value="moderno">Moderno</option>
+            <option value="minimalista">Minimalista</option>
+            <option value="oscuro">Oscuro</option>
+            <option value="vibrante">Vibrante</option>
+            <option value="tecnico">Técnico</option>
+            <option value="corporativo">Corporativo</option>
+            <option value="tech">Tech-Forward</option>
+            <option value="infografico">Infográfico</option>
+          </select>
+          <select id="font-select" class="lang-btn" title="Tipografía">
+            <option value="">Fuente: predeterminada</option>
+            <option value="serif-elegante">Fuente: Serif elegante</option>
+            <option value="sans-moderna">Fuente: Sans moderna</option>
+            <option value="mono">Fuente: Monoespaciada</option>
+          </select>
+          <input type="color" id="accent-picker" class="lang-btn" title="Color de acento" value="#c1440e" />
+          <a class="lang-btn" href="/curriculum-vitae/en/">EN</a>
+          <button type="button" class="pdf-btn" onclick="window.print()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+            <span>Descargar PDF</span>
+          </button>
+        </div>
+      </div>
+      <div class="identity-row">
+        {profile.photo && <img class="avatar" src={profile.photo} alt={profile.name} />}
+        <div class="identity-text">
+          <h1>{profile.name}</h1>
+          <p class="role">{profile.role} <span class="dim">· 5+ años de experiencia</span></p>
+        </div>
+      </div>
+
+      <nav class="contacts">
+        <a href={`tel:${profile.phone.replace(/\s+/g, '')}`}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>{profile.phone}</span>
+        </a>
+        <a href={`mailto:${profile.email}`}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>
+          <span>{profile.email}</span>
+        </a>
+        <a href={profile.github} target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.99 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.69 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a href={profile.linkedin} target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.94 5a2 2 0 1 1-4-.02 2 2 0 0 1 4 .02ZM3.34 8.5h3.2V21h-3.2V8.5Zm6.2 0h3.07v1.71h.04c.43-.81 1.47-1.66 3.02-1.66 3.23 0 3.83 2.12 3.83 4.88V21h-3.2v-5.9c0-1.4-.03-3.21-1.96-3.21-1.96 0-2.26 1.53-2.26 3.11V21h-3.2V8.5Z"/></svg>
+          <span>LinkedIn</span>
+        </a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="resumen" class="card">
+        <h2>Resumen profesional</h2>
+        <p>{profile.summary}</p>
+      </section>
+
+      <section id="destacadas">
+        <h2>Fortalezas clave</h2>
+        <ul class="featured">
+          {featuredSkills.map((s) => <li>{s}</li>)}
+        </ul>
+      </section>
+
+      <section id="logros" class="card">
+        <h2>Logros</h2>
+        <ul class="check-list">
+          {achievements.map((a) => <li>{a}</li>)}
+        </ul>
+      </section>
+
+      <section id="experiencia">
+        <h2>Experiencia profesional</h2>
+        <ol class="ruler">
+          {experience.map((job) => (
+            <li class="tick">
+              <div class="tick-axis" aria-hidden="true"></div>
+              <p class="tick-period">{job.period}</p>
+              <div class="tick-card">
+                <h3>{job.role}</h3>
+                <p class="company">{job.company}</p>
+                <p>{job.description}</p>
+                <ul>
+                  {job.highlights.map((h) => <li>{h}</li>)}
+                </ul>
+                <div class="tags">
+                  {job.tech.map((t) => <span class="tag">{t}</span>)}
+                </div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section id="proyectos">
+        <h2>Proyectos personales</h2>
+        <div class="grid">
+          {projects.map((p) => (
+            <article class="index-card">
+              <h3>{p.name}</h3>
+              <p>{p.description}</p>
+              <div class="tags">
+                {p.tech.map((t) => <span class="tag">{t}</span>)}
+              </div>
+              <a class="ext-link" href={p.link} target="_blank" rel="noopener">
+                Ver proyecto
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="skills">
+        <h2>Matriz de conocimiento</h2>
+        <div class="grid">
+          {Object.entries(skills).map(([category, items]) => (
+            <div class="index-card">
+              <h3>{category}</h3>
+              <div class="tags">
+                {items.map((t) => <span class="tag">{t}</span>)}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="blandas" class="card">
+        <h2>Habilidades blandas</h2>
+        <div class="tags">
+          {softSkills.map((s) => <span class="tag">{s}</span>)}
+        </div>
+      </section>
+
+      <section id="educacion" class="card">
+        <h2>Educación</h2>
+        {education.map((e) => (
+          <p><strong>{e.degree}</strong> — {e.school} ({e.period})</p>
+        ))}
+        <h3>Certificaciones</h3>
+        <ul class="check-list">
+          {certifications.map((c) => <li>{c.name} — {c.issuer} ({c.date})</li>)}
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <p>{profile.name} · {profile.email} · {profile.phone}</p>
+      <p class="no-print"><a href="/curriculum-vitae/builder/">¿Quieres el tuyo? Créalo aquí →</a></p>
+    </footer>
+
+    <script define:vars={{ cvName: profile.name }}>
+      window.addEventListener('beforeprint', () => {
+        window.__prevTitle = document.title;
+        document.title = cvName;
+      });
+      window.addEventListener('afterprint', () => {
+        if (window.__prevTitle) document.title = window.__prevTitle;
+      });
+    </script>
+
+    <script>
+      import { applyTechLayout } from '../lib/tech-layout';
+
+      const THEME_KEY = 'cv-theme';
+      const select = document.getElementById('theme-select');
+      const saved = localStorage.getItem(THEME_KEY) || 'clasico';
+      select.value = saved;
+      if (saved !== 'clasico') document.documentElement.dataset.theme = saved;
+      applyTechLayout(document.body, saved === 'tech');
+      select.addEventListener('change', () => {
+        if (select.value === 'clasico') {
+          delete document.documentElement.dataset.theme;
+        } else {
+          document.documentElement.dataset.theme = select.value;
+        }
+        applyTechLayout(document.body, select.value === 'tech');
+        localStorage.setItem(THEME_KEY, select.value);
+      });
+    </script>
+
+    <script>
+      const FONT_STACKS = {
+        'serif-elegante': "Georgia, 'Times New Roman', serif",
+        'sans-moderna': "'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+        mono: "ui-monospace, SFMono-Regular, 'JetBrains Mono', Consolas, monospace",
+      };
+      const FONT_KEY = 'cv-font';
+      const ACCENT_KEY = 'cv-accent';
+      const fontSelect = document.getElementById('font-select');
+      const accentPicker = document.getElementById('accent-picker');
+
+      const savedFont = localStorage.getItem(FONT_KEY) || '';
+      fontSelect.value = savedFont;
+      if (savedFont && FONT_STACKS[savedFont]) {
+        document.documentElement.style.setProperty('--sans', FONT_STACKS[savedFont]);
+      }
+      fontSelect.addEventListener('change', () => {
+        if (fontSelect.value && FONT_STACKS[fontSelect.value]) {
+          document.documentElement.style.setProperty('--sans', FONT_STACKS[fontSelect.value]);
+        } else {
+          document.documentElement.style.removeProperty('--sans');
+        }
+        localStorage.setItem(FONT_KEY, fontSelect.value);
+      });
+
+      const savedAccent = localStorage.getItem(ACCENT_KEY);
+      if (savedAccent) {
+        accentPicker.value = savedAccent;
+        document.documentElement.style.setProperty('--accent', savedAccent);
+      }
+      accentPicker.addEventListener('input', () => {
+        document.documentElement.style.setProperty('--accent', accentPicker.value);
+        localStorage.setItem(ACCENT_KEY, accentPicker.value);
+      });
+    </script>
+  </body>
+</html>

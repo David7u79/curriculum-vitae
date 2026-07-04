@@ -1,0 +1,956 @@
+---
+import '../styles/cv-theme.css';
+import '../styles/cv-themes.css';
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Crea tu CV — Constructor</title>
+    <meta name="description" content="Genera tu propio currículum interactivo y descárgalo en PDF. Todo se guarda solo en tu navegador." />
+    <script type="application/ld+json" id="jsonld"></script>
+  </head>
+  <body>
+    <div class="builder-layout">
+      <section class="builder-form no-print">
+        <div class="builder-top-row">
+          <p class="back-link"><a href="/curriculum-vitae/">← Volver al CV de ejemplo</a></p>
+          <a class="lang-btn" href="/curriculum-vitae/en/builder/">EN</a>
+        </div>
+        <h1>Crea tu CV</h1>
+        <p class="hint">Llena el formulario, mira la vista previa a la derecha y descarga tu PDF. Nada se envía a ningún servidor — todo se guarda solo en tu navegador (localStorage).</p>
+
+        <div class="builder-actions">
+          <button type="button" id="pdf-btn" class="pdf-btn">Descargar PDF</button>
+          <button type="button" id="reset-btn" class="reset-btn">Borrar todo</button>
+        </div>
+
+        <form id="cv-form">
+          <fieldset>
+            <legend>Estilo</legend>
+            <label>Colores
+              <select name="theme" id="cv-theme-select">
+                <option value="clasico">Clásico</option>
+                <option value="moderno">Moderno</option>
+                <option value="minimalista">Minimalista</option>
+                <option value="oscuro">Oscuro</option>
+                <option value="vibrante">Vibrante</option>
+                <option value="tecnico">Técnico</option>
+                <option value="corporativo">Corporativo</option>
+                <option value="tech">Tech-Forward</option>
+                <option value="infografico">Infográfico</option>
+              </select>
+            </label>
+            <label>Tipografía
+              <select name="font" id="cv-font-select">
+                <option value="">Predeterminada</option>
+                <option value="serif-elegante">Serif elegante</option>
+                <option value="sans-moderna">Sans moderna</option>
+                <option value="mono">Monoespaciada</option>
+              </select>
+            </label>
+            <label>Color de acento<input type="color" name="accent" id="cv-accent-select" value="#c1440e" /></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Asistencia con IA (opcional)</legend>
+            <p class="hint">Trae tu propia API key para mejorar textos con un clic. La key se guarda solo en tu navegador — nunca se envía a nuestro servidor ni se incluye en el CV exportado.</p>
+            <label>Proveedor
+              <select id="ai-provider">
+                <option value="anthropic">Anthropic (Claude)</option>
+                <option value="google">Google AI (Gemini)</option>
+                <option value="openai">Compatible con OpenAI (OpenAI, Groq, OpenRouter, Ollama...)</option>
+              </select>
+            </label>
+            <label>API key<input type="password" id="ai-key" autocomplete="off" placeholder="sk-ant-... o sk-..." /></label>
+            <label>Modelo<input type="text" id="ai-model" placeholder="claude-opus-4-8" /></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Perfil</legend>
+            <label>Foto (opcional)<input type="file" id="photo-input" accept="image/*" /></label>
+            <div id="photo-crop-modal" class="photo-crop-modal" hidden>
+              <div class="photo-crop-viewport" id="photo-crop-viewport">
+                <img id="photo-crop-img" alt="" />
+              </div>
+              <input type="range" id="photo-zoom" min="1" max="3" step="0.01" value="1" />
+              <div class="photo-crop-actions">
+                <button type="button" id="photo-crop-accept" class="add-btn">Usar foto</button>
+                <button type="button" id="photo-crop-cancel" class="reset-btn">Cancelar</button>
+              </div>
+            </div>
+            <div id="photo-preview-wrap"></div>
+            <input type="hidden" name="photo" id="photo-hidden" />
+            <label>Nombre<input name="name" /></label>
+            <label>Rol / título<input name="role" placeholder="Full Stack Developer" /></label>
+            <label>Ubicación<input name="location" /></label>
+            <label>Teléfono<input name="phone" /></label>
+            <label>Correo<input type="email" name="email" /></label>
+            <label>GitHub (URL)<input name="github" placeholder="https://github.com/usuario" /></label>
+            <label>LinkedIn (URL)<input name="linkedin" placeholder="https://linkedin.com/in/usuario" /></label>
+            <label>Resumen profesional<textarea name="summary" rows="4"></textarea></label>
+            <button type="button" class="ai-btn" data-action="ai-improve" data-target="summary" data-hint="Mejora este resumen profesional de CV: hazlo más impactante, conciso y profesional, en español. Devuelve solo el texto mejorado, sin comillas ni explicaciones.">✨ Mejorar con IA</button>
+          </fieldset>
+
+          <fieldset>
+            <legend>Fortalezas clave</legend>
+            <label>Una por línea<textarea name="featuredSkills" rows="4" placeholder="Java&#10;Spring Boot&#10;TypeScript"></textarea></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Logros</legend>
+            <label>Un logro por línea<textarea name="achievements" rows="4"></textarea></label>
+            <button type="button" class="ai-btn" data-action="ai-improve" data-target="achievements" data-hint="Mejora esta lista de logros profesionales de un CV (una línea por logro): hazlos más impactantes, concisos y orientados a resultados, en español. Devuelve solo la lista mejorada, una línea por logro, sin numeración ni explicaciones.">✨ Mejorar con IA</button>
+          </fieldset>
+
+          <fieldset>
+            <legend>Experiencia profesional</legend>
+            <div id="exp-list"></div>
+            <button type="button" class="add-btn" data-action="add-exp">+ Agregar experiencia</button>
+          </fieldset>
+
+          <fieldset>
+            <legend>Proyectos personales</legend>
+            <div id="proj-list"></div>
+            <button type="button" class="add-btn" data-action="add-proj">+ Agregar proyecto</button>
+          </fieldset>
+
+          <fieldset>
+            <legend>Matriz de conocimiento</legend>
+            <div id="skill-list"></div>
+            <button type="button" class="add-btn" data-action="add-skill">+ Agregar categoría</button>
+          </fieldset>
+
+          <fieldset>
+            <legend>Habilidades blandas</legend>
+            <label>Una por línea<textarea name="softSkills" rows="3"></textarea></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Educación</legend>
+            <div id="edu-list"></div>
+            <button type="button" class="add-btn" data-action="add-edu">+ Agregar</button>
+          </fieldset>
+
+          <fieldset>
+            <legend>Certificaciones</legend>
+            <div id="cert-list"></div>
+            <button type="button" class="add-btn" data-action="add-cert">+ Agregar</button>
+          </fieldset>
+        </form>
+      </section>
+
+      <section class="builder-preview">
+        <div id="preview"></div>
+      </section>
+    </div>
+
+    <template id="tpl-exp">
+      <div class="repeat-item">
+        <div class="repeat-head"><strong>Experiencia</strong><button type="button" class="remove-btn" data-action="remove">Quitar</button></div>
+        <label>Empresa<input data-field="company" /></label>
+        <label>Puesto<input data-field="role" /></label>
+        <label>Periodo<input data-field="period" placeholder="Ene 2022 – Actual" /></label>
+        <label>Descripción<textarea data-field="description" rows="3"></textarea></label>
+        <button type="button" class="ai-btn" data-action="ai-improve" data-target-field="description" data-hint="Mejora esta descripción de experiencia laboral para un CV: hazla más profesional, concisa e impactante, en español. Devuelve solo el texto mejorado, sin comillas ni explicaciones.">✨ Mejorar con IA</button>
+        <label>Logros (uno por línea)<textarea data-field="highlights" rows="3"></textarea></label>
+        <button type="button" class="ai-btn" data-action="ai-improve" data-target-field="highlights" data-hint="Mejora esta lista de logros de experiencia laboral (una línea por logro) para un CV: hazlos más impactantes, concisos y orientados a resultados, en español. Devuelve solo la lista mejorada, una línea por logro, sin numeración ni explicaciones.">✨ Mejorar con IA</button>
+        <label>Tecnologías (separadas por coma)<input data-field="tech" /></label>
+      </div>
+    </template>
+
+    <template id="tpl-proj">
+      <div class="repeat-item">
+        <div class="repeat-head"><strong>Proyecto</strong><button type="button" class="remove-btn" data-action="remove">Quitar</button></div>
+        <label>Nombre<input data-field="name" /></label>
+        <label>Descripción<textarea data-field="description" rows="2"></textarea></label>
+        <button type="button" class="ai-btn" data-action="ai-improve" data-target-field="description" data-hint="Mejora esta descripción de proyecto personal para un CV: hazla más profesional, concisa e impactante, en español. Devuelve solo el texto mejorado, sin comillas ni explicaciones.">✨ Mejorar con IA</button>
+        <label>Enlace (URL)<input data-field="link" /></label>
+        <label>Tecnologías (coma)<input data-field="tech" /></label>
+      </div>
+    </template>
+
+    <template id="tpl-skill">
+      <div class="repeat-item">
+        <div class="repeat-head"><strong>Categoría</strong><button type="button" class="remove-btn" data-action="remove">Quitar</button></div>
+        <label>Nombre de categoría<input data-field="category" placeholder="Lenguajes / Frameworks" /></label>
+        <label>Items (coma)<input data-field="items" /></label>
+      </div>
+    </template>
+
+    <template id="tpl-edu">
+      <div class="repeat-item">
+        <div class="repeat-head"><strong>Educación</strong><button type="button" class="remove-btn" data-action="remove">Quitar</button></div>
+        <label>Título<input data-field="degree" /></label>
+        <label>Institución<input data-field="school" /></label>
+        <label>Periodo<input data-field="period" /></label>
+      </div>
+    </template>
+
+    <template id="tpl-cert">
+      <div class="repeat-item">
+        <div class="repeat-head"><strong>Certificación</strong><button type="button" class="remove-btn" data-action="remove">Quitar</button></div>
+        <label>Nombre<input data-field="name" /></label>
+        <label>Institución<input data-field="issuer" /></label>
+        <label>Fecha<input data-field="date" /></label>
+      </div>
+    </template>
+
+    <script>
+      import { buildJsonLd } from '../lib/jsonld';
+      import { applyTechLayout } from '../lib/tech-layout';
+      import Anthropic from '@anthropic-ai/sdk';
+
+      const STORAGE_KEY = 'cv-builder-data-v1';
+      const AI_CONFIG_KEY = 'cv-builder-ai-config-v1';
+      const FONT_STACKS = {
+        'serif-elegante': "Georgia, 'Times New Roman', serif",
+        'sans-moderna': "'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+        mono: "ui-monospace, SFMono-Regular, 'JetBrains Mono', Consolas, monospace",
+      };
+
+      function loadAiConfig() {
+        let cfg = {};
+        try { cfg = JSON.parse(localStorage.getItem(AI_CONFIG_KEY) || '{}'); } catch {}
+        const provider = document.getElementById('ai-provider');
+        const key = document.getElementById('ai-key');
+        const model = document.getElementById('ai-model');
+        if (cfg.provider) provider.value = cfg.provider;
+        if (cfg.key) key.value = cfg.key;
+        model.value = cfg.model || DEFAULT_MODELS[provider.value] || '';
+      }
+
+      function saveAiConfig() {
+        const cfg = {
+          provider: document.getElementById('ai-provider').value,
+          key: document.getElementById('ai-key').value,
+          model: document.getElementById('ai-model').value,
+        };
+        localStorage.setItem(AI_CONFIG_KEY, JSON.stringify(cfg));
+      }
+
+      const DEFAULT_MODELS = { anthropic: 'claude-opus-4-8', google: 'gemini-flash-latest', openai: 'gpt-4o-mini' };
+
+      function syncAiModelDefault() {
+        const provider = document.getElementById('ai-provider').value;
+        const modelInput = document.getElementById('ai-model');
+        if (!modelInput.value) modelInput.value = DEFAULT_MODELS[provider] || '';
+      }
+
+      async function askAI(instruction, text) {
+        const provider = document.getElementById('ai-provider').value;
+        const key = document.getElementById('ai-key').value.trim();
+        const model = document.getElementById('ai-model').value.trim();
+        if (!key) throw new Error('Falta la API key. Complétala en "Asistencia con IA".');
+
+        if (provider === 'anthropic') {
+          const client = new Anthropic({ apiKey: key, dangerouslyAllowBrowser: true });
+          const res = await client.messages.create({
+            model: model || 'claude-opus-4-8',
+            max_tokens: 1024,
+            messages: [{ role: 'user', content: `${instruction}\n\n---\n${text}` }],
+          });
+          const block = res.content.find((b) => b.type === 'text');
+          return block ? block.text.trim() : '';
+        }
+
+        if (provider === 'google') {
+          const m = model || 'gemini-flash-latest';
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(key)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              systemInstruction: { parts: [{ text: instruction }] },
+              contents: [{ parts: [{ text }] }],
+            }),
+          });
+          if (!res.ok) throw new Error(`Error de la API (${res.status})`);
+          const data = await res.json();
+          return (data.candidates?.[0]?.content?.parts?.[0]?.text || '').trim();
+        }
+
+        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: model || 'gpt-4o-mini',
+            messages: [
+              { role: 'system', content: instruction },
+              { role: 'user', content: text },
+            ],
+          }),
+        });
+        if (!res.ok) throw new Error(`Error de la API (${res.status})`);
+        const data = await res.json();
+        return (data.choices?.[0]?.message?.content || '').trim();
+      }
+
+      const ICONS = {
+        phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+        mail: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 6-10 7L2 6"/></svg>',
+        github: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.53 2.36 1.09 2.94.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.99 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.69 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>',
+        linkedin: '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.94 5a2 2 0 1 1-4-.02 2 2 0 0 1 4 .02ZM3.34 8.5h3.2V21h-3.2V8.5Zm6.2 0h3.07v1.71h.04c.43-.81 1.47-1.66 3.02-1.66 3.23 0 3.83 2.12 3.83 4.88V21h-3.2v-5.9c0-1.4-.03-3.21-1.96-3.21-1.96 0-2.26 1.53-2.26 3.11V21h-3.2V8.5Z"/></svg>',
+        ext: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>',
+      };
+
+      const groups = {
+        exp: { list: '#exp-list', tpl: '#tpl-exp' },
+        proj: { list: '#proj-list', tpl: '#tpl-proj' },
+        skill: { list: '#skill-list', tpl: '#tpl-skill' },
+        edu: { list: '#edu-list', tpl: '#tpl-edu' },
+        cert: { list: '#cert-list', tpl: '#tpl-cert' },
+      };
+
+      function esc(str) {
+        return String(str ?? '').replace(/[&<>"']/g, (c) => ({
+          '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+        })[c]);
+      }
+
+      function linesToArray(str) {
+        return String(str || '').split('\n').map((s) => s.trim()).filter(Boolean);
+      }
+
+      function csvToArray(str) {
+        return String(str || '').split(',').map((s) => s.trim()).filter(Boolean);
+      }
+
+      function addItem(key, data) {
+        const g = groups[key];
+        const tpl = document.querySelector(g.tpl);
+        const node = tpl.content.firstElementChild.cloneNode(true);
+        if (data) {
+          node.querySelectorAll('[data-field]').forEach((el) => {
+            const f = el.dataset.field;
+            if (data[f] !== undefined) el.value = data[f];
+          });
+        }
+        document.querySelector(g.list).appendChild(node);
+      }
+
+      function collectGroup(key) {
+        const g = groups[key];
+        const items = [];
+        document.querySelectorAll(`${g.list} .repeat-item`).forEach((item) => {
+          const obj = {};
+          item.querySelectorAll('[data-field]').forEach((el) => {
+            obj[el.dataset.field] = el.value;
+          });
+          items.push(obj);
+        });
+        return items;
+      }
+
+      function collectState() {
+        const fd = new FormData(document.getElementById('cv-form'));
+        return {
+          theme: fd.get('theme') || 'clasico',
+          font: fd.get('font') || '',
+          accent: fd.get('accent') || '',
+          profile: {
+            name: fd.get('name') || '',
+            role: fd.get('role') || '',
+            location: fd.get('location') || '',
+            phone: fd.get('phone') || '',
+            email: fd.get('email') || '',
+            github: fd.get('github') || '',
+            linkedin: fd.get('linkedin') || '',
+            summary: fd.get('summary') || '',
+            photo: fd.get('photo') || '',
+          },
+          featuredSkills: linesToArray(fd.get('featuredSkills')),
+          achievements: linesToArray(fd.get('achievements')),
+          softSkills: linesToArray(fd.get('softSkills')),
+          experience: collectGroup('exp').map((e) => ({
+            company: e.company, role: e.role, period: e.period, description: e.description,
+            highlights: linesToArray(e.highlights), tech: csvToArray(e.tech),
+          })),
+          projects: collectGroup('proj').map((p) => ({
+            name: p.name, description: p.description, link: p.link, tech: csvToArray(p.tech),
+          })),
+          skills: collectGroup('skill').map((s) => ({ category: s.category, items: csvToArray(s.items) })),
+          education: collectGroup('edu'),
+          certifications: collectGroup('cert'),
+        };
+      }
+
+      function renderPreview(state) {
+        const p = state.profile;
+        const telHref = 'tel:' + (p.phone || '').replace(/\s+/g, '');
+        const hasEdu = state.education.some((e) => e.degree || e.school);
+        const hasCert = state.certifications.some((c) => c.name);
+
+        const html = `
+          <header class="sheet">
+            <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+            <p class="eyebrow">Curriculum${p.location ? ' · ' + esc(p.location) : ''}</p>
+            <div class="identity-row">
+              ${p.photo ? `<img class="avatar" src="${p.photo}" alt="${esc(p.name)}" />` : ''}
+              <div class="identity-text">
+                <h1>${esc(p.name) || 'Tu nombre'}</h1>
+                <p class="role">${esc(p.role) || 'Tu rol'}</p>
+              </div>
+            </div>
+            <nav class="contacts">
+              ${p.phone ? `<a href="${esc(telHref)}">${ICONS.phone}<span>${esc(p.phone)}</span></a>` : ''}
+              ${p.email ? `<a href="mailto:${esc(p.email)}">${ICONS.mail}<span>${esc(p.email)}</span></a>` : ''}
+              ${p.github ? `<a href="${esc(p.github)}" target="_blank" rel="noopener">${ICONS.github}<span>GitHub</span></a>` : ''}
+              ${p.linkedin ? `<a href="${esc(p.linkedin)}" target="_blank" rel="noopener">${ICONS.linkedin}<span>LinkedIn</span></a>` : ''}
+            </nav>
+          </header>
+          <main>
+            ${p.summary ? `<section id="resumen" class="card"><h2>Resumen profesional</h2><p>${esc(p.summary)}</p></section>` : ''}
+            ${state.featuredSkills.length ? `<section id="destacadas"><h2>Fortalezas clave</h2><ul class="featured">${state.featuredSkills.map((s) => `<li>${esc(s)}</li>`).join('')}</ul></section>` : ''}
+            ${state.achievements.length ? `<section id="logros" class="card"><h2>Logros</h2><ul class="check-list">${state.achievements.map((a) => `<li>${esc(a)}</li>`).join('')}</ul></section>` : ''}
+            ${state.experience.length ? `<section id="experiencia"><h2>Experiencia profesional</h2><ol class="ruler">${state.experience.map((job) => `
+              <li class="tick">
+                <div class="tick-axis"></div>
+                <p class="tick-period">${esc(job.period)}</p>
+                <div class="tick-card">
+                  <h3>${esc(job.role) || 'Puesto'}</h3>
+                  <p class="company">${esc(job.company)}</p>
+                  ${job.description ? `<p>${esc(job.description)}</p>` : ''}
+                  ${job.highlights.length ? `<ul>${job.highlights.map((h) => `<li>${esc(h)}</li>`).join('')}</ul>` : ''}
+                  ${job.tech.length ? `<div class="tags">${job.tech.map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
+                </div>
+              </li>`).join('')}</ol></section>` : ''}
+            ${state.projects.length ? `<section id="proyectos"><h2>Proyectos personales</h2><div class="grid">${state.projects.map((pr) => `
+              <article class="index-card">
+                <h3>${esc(pr.name) || 'Proyecto'}</h3>
+                ${pr.description ? `<p>${esc(pr.description)}</p>` : ''}
+                ${pr.tech.length ? `<div class="tags">${pr.tech.map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
+                ${pr.link ? `<a class="ext-link" href="${esc(pr.link)}" target="_blank" rel="noopener">Ver proyecto ${ICONS.ext}</a>` : ''}
+              </article>`).join('')}</div></section>` : ''}
+            ${state.skills.length ? `<section id="skills"><h2>Matriz de conocimiento</h2><div class="grid">${state.skills.map((s) => `
+              <div class="index-card"><h3>${esc(s.category) || 'Categoría'}</h3><div class="tags">${s.items.map((t) => `<span class="tag">${esc(t)}</span>`).join('')}</div></div>`).join('')}</div></section>` : ''}
+            ${state.softSkills.length ? `<section id="blandas" class="card"><h2>Habilidades blandas</h2><div class="tags">${state.softSkills.map((s) => `<span class="tag">${esc(s)}</span>`).join('')}</div></section>` : ''}
+            ${(hasEdu || hasCert) ? `<section id="educacion" class="card"><h2>Educación</h2>
+              ${state.education.filter((e) => e.degree || e.school).map((e) => `<p><strong>${esc(e.degree)}</strong> — ${esc(e.school)} (${esc(e.period)})</p>`).join('')}
+              ${hasCert ? `<h3>Certificaciones</h3><ul class="check-list">${state.certifications.filter((c) => c.name).map((c) => `<li>${esc(c.name)} — ${esc(c.issuer)} (${esc(c.date)})</li>`).join('')}</ul>` : ''}
+            </section>` : ''}
+          </main>
+          <footer><p>${esc(p.name)}${p.email ? ' · ' + esc(p.email) : ''}${p.phone ? ' · ' + esc(p.phone) : ''}</p></footer>
+        `;
+        const previewEl = document.getElementById('preview');
+        previewEl.innerHTML = html;
+        const wrap = document.querySelector('.builder-preview');
+        if (state.theme && state.theme !== 'clasico') {
+          wrap.dataset.theme = state.theme;
+        } else {
+          delete wrap.dataset.theme;
+        }
+        applyTechLayout(previewEl, state.theme === 'tech');
+        if (state.font && FONT_STACKS[state.font]) {
+          wrap.style.setProperty('--sans', FONT_STACKS[state.font]);
+        } else {
+          wrap.style.removeProperty('--sans');
+        }
+        if (state.accent) {
+          wrap.style.setProperty('--accent', state.accent);
+        } else {
+          wrap.style.removeProperty('--accent');
+        }
+      }
+
+      function update() {
+        const state = collectState();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        renderPreview(state);
+        const jsonLdEl = document.getElementById('jsonld');
+        if (jsonLdEl) jsonLdEl.textContent = JSON.stringify(buildJsonLd(state));
+      }
+
+      const cropState = { img: null, baseScale: 1, scale: 1, offsetX: 0, offsetY: 0, dragging: false, startX: 0, startY: 0, startOffsetX: 0, startOffsetY: 0, viewport: 220, output: 320 };
+
+      function clampCropOffsets() {
+        const vw = cropState.viewport;
+        const dw = cropState.img.naturalWidth * cropState.scale;
+        const dh = cropState.img.naturalHeight * cropState.scale;
+        const maxX = Math.max(0, (dw - vw) / 2);
+        const maxY = Math.max(0, (dh - vw) / 2);
+        cropState.offsetX = Math.min(maxX, Math.max(-maxX, cropState.offsetX));
+        cropState.offsetY = Math.min(maxY, Math.max(-maxY, cropState.offsetY));
+      }
+
+      function applyCropTransform() {
+        clampCropOffsets();
+        cropState.img.style.transform = `translate(-50%, -50%) translate(${cropState.offsetX}px, ${cropState.offsetY}px) scale(${cropState.scale})`;
+      }
+
+      function openCropModal(dataUrl) {
+        const img = document.getElementById('photo-crop-img');
+        img.onload = () => {
+          cropState.img = img;
+          cropState.baseScale = Math.max(cropState.viewport / img.naturalWidth, cropState.viewport / img.naturalHeight);
+          cropState.scale = cropState.baseScale;
+          cropState.offsetX = 0;
+          cropState.offsetY = 0;
+          document.getElementById('photo-zoom').value = '1';
+          applyCropTransform();
+          document.getElementById('photo-crop-modal').hidden = false;
+        };
+        img.src = dataUrl;
+      }
+
+      function closeCropModal() {
+        document.getElementById('photo-crop-modal').hidden = true;
+        document.getElementById('photo-input').value = '';
+      }
+
+      function acceptCrop() {
+        const out = cropState.output;
+        const ratio = out / cropState.viewport;
+        const canvas = document.createElement('canvas');
+        canvas.width = out;
+        canvas.height = out;
+        const ctx = canvas.getContext('2d');
+        ctx.translate(out / 2 + cropState.offsetX * ratio, out / 2 + cropState.offsetY * ratio);
+        ctx.scale(cropState.scale * ratio, cropState.scale * ratio);
+        ctx.drawImage(cropState.img, -cropState.img.naturalWidth / 2, -cropState.img.naturalHeight / 2);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        document.getElementById('photo-hidden').value = dataUrl;
+        syncPhotoUI(dataUrl);
+        closeCropModal();
+        update();
+      }
+
+      function syncPhotoUI(dataUrl) {
+        const wrap = document.getElementById('photo-preview-wrap');
+        wrap.innerHTML = dataUrl
+          ? `<img src="${dataUrl}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0.3rem 0;" /> <button type="button" id="photo-clear-btn" class="remove-btn">Quitar foto</button>`
+          : '';
+        const clearBtn = document.getElementById('photo-clear-btn');
+        if (clearBtn) {
+          clearBtn.addEventListener('click', () => {
+            document.getElementById('photo-hidden').value = '';
+            document.getElementById('photo-input').value = '';
+            syncPhotoUI('');
+            update();
+          });
+        }
+      }
+
+      function seedEmpty() {
+        addItem('exp');
+        addItem('proj');
+        addItem('skill');
+        addItem('edu');
+        addItem('cert');
+      }
+
+      function loadState() {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          seedEmpty();
+          update();
+          return;
+        }
+        let state;
+        try {
+          state = JSON.parse(raw);
+        } catch {
+          seedEmpty();
+          update();
+          return;
+        }
+        for (const [k, v] of Object.entries(state.profile || {})) {
+          const el = document.querySelector(`[name="${k}"]`);
+          if (el) el.value = v;
+        }
+        document.getElementById('cv-theme-select').value = state.theme || 'clasico';
+        document.getElementById('cv-font-select').value = state.font || '';
+        document.getElementById('cv-accent-select').value = state.accent || '#c1440e';
+        const fs = document.querySelector('[name="featuredSkills"]');
+        if (fs) fs.value = (state.featuredSkills || []).join('\n');
+        const ac = document.querySelector('[name="achievements"]');
+        if (ac) ac.value = (state.achievements || []).join('\n');
+        const ss = document.querySelector('[name="softSkills"]');
+        if (ss) ss.value = (state.softSkills || []).join('\n');
+        document.getElementById('photo-hidden').value = (state.profile || {}).photo || '';
+        syncPhotoUI((state.profile || {}).photo || '');
+
+        (state.experience || []).forEach((e) => addItem('exp', { ...e, highlights: (e.highlights || []).join('\n'), tech: (e.tech || []).join(', ') }));
+        (state.projects || []).forEach((pr) => addItem('proj', { ...pr, tech: (pr.tech || []).join(', ') }));
+        (state.skills || []).forEach((s) => addItem('skill', { category: s.category, items: (s.items || []).join(', ') }));
+        (state.education || []).forEach((e) => addItem('edu', e));
+        (state.certifications || []).forEach((c) => addItem('cert', c));
+
+        if (!(state.experience || []).length) addItem('exp');
+        if (!(state.projects || []).length) addItem('proj');
+        if (!(state.skills || []).length) addItem('skill');
+        if (!(state.education || []).length) addItem('edu');
+        if (!(state.certifications || []).length) addItem('cert');
+
+        renderPreview(state);
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        loadState();
+        document.getElementById('cv-form').addEventListener('input', update);
+        document.getElementById('photo-input').addEventListener('change', (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = () => openCropModal(reader.result);
+          reader.readAsDataURL(file);
+        });
+
+        document.getElementById('photo-zoom').addEventListener('input', (e) => {
+          cropState.scale = cropState.baseScale * Number(e.target.value);
+          applyCropTransform();
+        });
+
+        const cropViewport = document.getElementById('photo-crop-viewport');
+        cropViewport.addEventListener('pointerdown', (e) => {
+          cropState.dragging = true;
+          cropState.startX = e.clientX;
+          cropState.startY = e.clientY;
+          cropState.startOffsetX = cropState.offsetX;
+          cropState.startOffsetY = cropState.offsetY;
+          cropViewport.setPointerCapture(e.pointerId);
+        });
+        cropViewport.addEventListener('pointermove', (e) => {
+          if (!cropState.dragging) return;
+          cropState.offsetX = cropState.startOffsetX + (e.clientX - cropState.startX);
+          cropState.offsetY = cropState.startOffsetY + (e.clientY - cropState.startY);
+          applyCropTransform();
+        });
+        cropViewport.addEventListener('pointerup', () => { cropState.dragging = false; });
+        cropViewport.addEventListener('pointercancel', () => { cropState.dragging = false; });
+
+        document.getElementById('photo-crop-accept').addEventListener('click', acceptCrop);
+        document.getElementById('photo-crop-cancel').addEventListener('click', closeCropModal);
+
+        document.body.addEventListener('click', async (e) => {
+          const btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          const action = btn.dataset.action;
+          if (action === 'remove') {
+            btn.closest('.repeat-item').remove();
+            update();
+            return;
+          }
+          const map = { 'add-exp': 'exp', 'add-proj': 'proj', 'add-skill': 'skill', 'add-edu': 'edu', 'add-cert': 'cert' };
+          if (map[action]) {
+            addItem(map[action]);
+            update();
+            return;
+          }
+          if (action === 'ai-improve') {
+            let field;
+            if (btn.dataset.target) {
+              field = document.querySelector(`[name="${btn.dataset.target}"]`);
+            } else if (btn.dataset.targetField) {
+              field = btn.closest('.repeat-item').querySelector(`[data-field="${btn.dataset.targetField}"]`);
+            }
+            if (!field || !field.value.trim()) return;
+            const original = btn.textContent;
+            btn.disabled = true;
+            btn.textContent = 'Mejorando...';
+            try {
+              field.value = await askAI(btn.dataset.hint, field.value);
+              field.dispatchEvent(new Event('input', { bubbles: true }));
+            } catch (err) {
+              alert(err.message || 'Error al llamar a la IA.');
+            } finally {
+              btn.disabled = false;
+              btn.textContent = original;
+            }
+          }
+        });
+
+        loadAiConfig();
+        document.getElementById('ai-provider').addEventListener('change', () => {
+          document.getElementById('ai-model').value = '';
+          syncAiModelDefault();
+          saveAiConfig();
+        });
+        ['ai-key', 'ai-model'].forEach((id) => {
+          document.getElementById(id).addEventListener('input', saveAiConfig);
+        });
+
+        window.addEventListener('beforeprint', () => {
+          const nameInput = document.querySelector('[name="name"]');
+          window.__prevTitle = document.title;
+          document.title = (nameInput && nameInput.value) || document.title;
+        });
+        window.addEventListener('afterprint', () => {
+          if (window.__prevTitle) document.title = window.__prevTitle;
+        });
+
+        document.getElementById('pdf-btn').addEventListener('click', () => window.print());
+        document.getElementById('reset-btn').addEventListener('click', () => {
+          if (confirm('¿Borrar todo el contenido? Esto no se puede deshacer.')) {
+            localStorage.removeItem(STORAGE_KEY);
+            location.reload();
+          }
+        });
+      });
+    </script>
+
+    <style>
+      .builder-layout {
+        display: grid;
+        grid-template-columns: minmax(320px, 420px) 1fr;
+        gap: 0;
+        align-items: start;
+      }
+
+      .builder-form {
+        padding: 2rem 1.75rem 4rem;
+        max-height: 100vh;
+        overflow-y: auto;
+        position: sticky;
+        top: 0;
+        border-right: 1px solid var(--line);
+        background: var(--paper);
+      }
+
+      .builder-top-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin: 0 0 1rem;
+      }
+
+      .back-link {
+        margin: 0;
+        font-size: 0.85rem;
+      }
+
+      .back-link a {
+        color: var(--ink-soft);
+      }
+
+      .builder-form h1 {
+        margin: 0 0 0.5rem;
+        font-size: 1.5rem;
+      }
+
+      .hint {
+        color: var(--ink-soft);
+        font-size: 0.85rem;
+        margin: 0 0 1.5rem;
+      }
+
+      fieldset {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        margin: 0 0 1.25rem;
+        padding: 1rem 1.1rem 1.2rem;
+      }
+
+      legend {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        padding: 0 0.4rem;
+      }
+
+      label {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+      }
+
+      input, textarea, select {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 0.3rem;
+        padding: 0.45rem 0.6rem;
+        font-family: var(--sans);
+        font-size: 0.88rem;
+        font-weight: 400;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: var(--card);
+        color: var(--ink);
+      }
+
+      input[type="color"] {
+        width: 60px;
+        padding: 0.2rem;
+        height: 36px;
+        cursor: pointer;
+      }
+
+      textarea {
+        resize: vertical;
+      }
+
+      input:focus, textarea:focus {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px;
+      }
+
+      .repeat-item {
+        border: 1px dashed var(--line);
+        border-radius: 6px;
+        padding: 0.8rem 0.9rem 0.2rem;
+        margin-bottom: 0.9rem;
+        background: var(--card);
+      }
+
+      .repeat-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.6rem;
+        font-size: 0.8rem;
+      }
+
+      .remove-btn {
+        background: none;
+        border: none;
+        color: var(--accent);
+        font-size: 0.78rem;
+        cursor: pointer;
+        padding: 0;
+      }
+
+      .add-btn {
+        background: none;
+        border: 1px dashed var(--ink-soft);
+        border-radius: 4px;
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 0.82rem;
+        font-weight: 600;
+        padding: 0.4rem 0.8rem;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .add-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .ai-btn {
+        display: block;
+        background: none;
+        border: 1px solid var(--accent);
+        border-radius: 4px;
+        color: var(--accent);
+        font-family: var(--sans);
+        font-size: 0.78rem;
+        font-weight: 600;
+        padding: 0.35rem 0.7rem;
+        margin: -0.4rem 0 0.9rem;
+        cursor: pointer;
+      }
+
+      .ai-btn:hover {
+        background: var(--accent);
+        color: var(--paper);
+      }
+
+      .ai-btn:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      .builder-actions {
+        display: flex;
+        gap: 0.6rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .reset-btn {
+        background: none;
+        border: 1px solid var(--line);
+        color: var(--ink-soft);
+        font-family: var(--sans);
+        font-size: 0.82rem;
+        padding: 0.45rem 0.9rem;
+        cursor: pointer;
+      }
+
+      .reset-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .builder-preview {
+        min-height: 100vh;
+        padding-bottom: 3rem;
+      }
+
+      .builder-preview[data-theme] {
+        background: var(--paper);
+      }
+
+      .photo-crop-modal {
+        margin: 0.5rem 0 1rem;
+        padding: 0.9rem;
+        border: 1px dashed var(--line);
+        border-radius: 6px;
+        text-align: center;
+        background: var(--card);
+      }
+
+      .photo-crop-viewport {
+        width: 220px;
+        height: 220px;
+        margin: 0 auto;
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        background: #111;
+        cursor: grab;
+        touch-action: none;
+      }
+
+      .photo-crop-viewport:active {
+        cursor: grabbing;
+      }
+
+      .photo-crop-viewport img {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        max-width: none;
+        transform-origin: center;
+        user-select: none;
+        -webkit-user-drag: none;
+      }
+
+      #photo-zoom {
+        width: 220px;
+        margin-top: 0.7rem;
+      }
+
+      .photo-crop-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: center;
+        margin-top: 0.7rem;
+      }
+
+      @media (max-width: 900px) {
+        .builder-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .builder-form {
+          position: static;
+          max-height: none;
+          border-right: none;
+          border-bottom: 1px solid var(--line);
+        }
+      }
+
+      @media print {
+        .builder-layout {
+          display: block;
+        }
+      }
+    </style>
+  </body>
+</html>

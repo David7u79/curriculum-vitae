@@ -1,0 +1,20 @@
+{
+  "name": "curriculum-vitae",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.110.0",
+    "astro": "^4.16.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
+  }
+}
