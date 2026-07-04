@@ -121,21 +121,9 @@ export const experience = [
 
 export const projects = [
   {
-    name: 'Proyecto Uno',
-    description: 'Descripción corta del proyecto: qué problema resuelve y con qué stack se construyó.',
-    link: 'https://github.com/David7u79',
+    name: 'CV Interactivo + Generador',
+    description: 'Este mismo sitio: CV como página web con temas intercambiables, exportación a PDF, datos estructurados (JSON-LD) y un generador para que cualquiera cree el suyo, todo guardado en el navegador.',
+    link: 'https://David7u79.github.io/curriculum-vitae/',
     tech: ['TypeScript', 'Astro'],
-  },
-  {
-    name: 'Proyecto Dos',
-    description: 'Descripción corta del proyecto: qué problema resuelve y con qué stack se construyó.',
-    link: 'https://github.com/David7u79',
-    tech: ['Java', 'Spring Boot'],
-  },
-  {
-    name: 'Proyecto Tres',
-    description: 'Descripción corta del proyecto: qué problema resuelve y con qué stack se construyó.',
-    link: 'https://github.com/David7u79',
-    tech: ['Python'],
   },
 ];
