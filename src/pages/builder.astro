@@ -53,8 +53,8 @@ import '../styles/cv-themes.css';
             <label>Color de acento<input type="color" name="accent" id="cv-accent-select" value="#c1440e" /></label>
           </fieldset>
 
-          <fieldset>
-            <legend>Asistencia con IA (opcional)</legend>
+          <details class="fieldset-details">
+            <summary>Asistencia con IA (opcional)</summary>
             <p class="hint">Trae tu propia API key para mejorar textos con un clic. La key se guarda solo en tu navegador — nunca se envía a nuestro servidor ni se incluye en el CV exportado.</p>
             <label>Proveedor
               <select id="ai-provider">
@@ -65,7 +65,7 @@ import '../styles/cv-themes.css';
             </label>
             <label>API key<input type="password" id="ai-key" autocomplete="off" placeholder="sk-ant-... o sk-..." /></label>
             <label>Modelo<input type="text" id="ai-model" placeholder="claude-opus-4-8" /></label>
-          </fieldset>
+          </details>
 
           <fieldset>
             <legend>Perfil</legend>
@@ -749,6 +749,31 @@ import '../styles/cv-themes.css';
         text-transform: uppercase;
         color: var(--ink-soft);
         padding: 0 0.4rem;
+      }
+
+      .fieldset-details {
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        margin: 0 0 1.25rem;
+        padding: 0.6rem 1.1rem;
+      }
+
+      .fieldset-details[open] {
+        padding-bottom: 1.2rem;
+      }
+
+      .fieldset-details summary {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        cursor: pointer;
+        padding: 0.4rem 0;
+      }
+
+      .fieldset-details label:first-of-type {
+        margin-top: 0.5rem;
       }
 
       label {
