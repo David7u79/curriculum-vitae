@@ -80,7 +80,7 @@ export const experience = [
   {
     company: 'MTI Consultoría',
     role: 'Programmer',
-    period: 'February 2022 – February 2026',
+    period: 'January 2024 – February 2026',
     description:
       'Design, development and maintenance of full stack applications. Backend with JavaScript and PL/SQL, optimized queries and stored procedures. Frontend with TypeScript and HTML. REST API integration. Version control with GitLab and SVN. Migration from Oracle Forms to Oracle JET and from Oracle Reports to Java.',
     highlights: [
@@ -94,7 +94,7 @@ export const experience = [
   {
     company: 'Nubelity LLC',
     role: 'Jr. Java Programmer',
-    period: 'January 2021 – December 2021',
+    period: 'January 2023 – December 2023',
     description:
       'Backend and frontend development for multiple clients, microservices implementation and advanced GitHub usage. Work on large-scale projects while maintaining critical functionality.',
     highlights: [
@@ -107,7 +107,7 @@ export const experience = [
   {
     company: 'Apsi',
     role: 'Full Stack Developer',
-    period: 'January 2020 – January 2021',
+    period: 'January 2022 – January 2023',
     description:
       'Training on application migration and best practices implementation. Branch and version management on collaborative projects. Development with PL/SQL and C# for data management.',
     highlights: [
