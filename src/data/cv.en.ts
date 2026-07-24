@@ -4,7 +4,7 @@ export const profile = {
   photo: '',
   role: 'Full Stack Developer | Java & Application Security (IAM/SSO)',
   summary:
-    'Full Stack Developer with 5+ years building and modernizing critical systems, from legacy application migrations (JSF, Oracle Forms) to microservices with Spring Boot and Angular. Focused on application security: authentication and authorization with Spring Security, OAuth 2.0 / OpenID Connect, JWT, MFA and Single Sign-On (SSO) with Okta. End-to-end experience: design, backend, frontend and secure API integration.',
+    'Full Stack Developer focused on system modernization, secure APIs and legacy migrations. Specialized in Java, Spring Boot, Angular and centralized authentication with OAuth 2.0/OIDC, JWT and Okta.',
   location: 'Mexico',
   phone: '+52 749 850 71 64',
   email: 'david.blancas.labastida@hotmail.com',
@@ -16,45 +16,32 @@ export const featuredSkills = [
   'Java',
   'Spring Boot',
   'Spring Security',
-  'OAuth 2.0 / OIDC',
-  'JWT',
-  'Okta',
-  'SSO',
-  'MFA',
   'Angular',
   'TypeScript',
-  'Microservices',
-  'REST APIs',
+  'Okta',
+  'OAuth 2.0 / OIDC',
+  'JWT / SSO',
 ];
 
 export const skills = {
-  'Languages / Frameworks / Libraries': ['Java (8+)', 'Java EE', 'Spring Boot', 'Spring Security', 'TypeScript', 'C#', 'Angular', 'Python'],
-  'Security / IAM': ['Okta', 'OAuth 2.0', 'OpenID Connect', 'JWT (JWS/JWK)', 'MFA', 'Single Sign-On (SSO)', 'SAML 2.0', 'RBAC', 'OWASP Top 10'],
-  'DBMS / IDE': ['MySQL', 'PostgreSQL', 'SQL Server', 'PL/SQL', 'IntelliJ IDEA', 'PyCharm', 'Eclipse'],
-  'Tools': ['Git', 'SVN', 'GitHub', 'GitLab', 'pytest', 'JUnit', 'Docker', 'Jenkins'],
-  'Methodologies / Architectures': ['SCRUM', 'Microservices', 'Design patterns', 'REST APIs', 'Zero Trust architecture', 'Centralized authentication (SSO)'],
-  'Servers and OS': ['Nginx', 'Linux', 'Windows'],
+  'Backend and frontend': ['Java', 'Spring Boot', 'Spring Security', 'Angular', 'TypeScript', 'Python'],
+  'Security and IAM': ['Okta', 'OAuth 2.0', 'OpenID Connect', 'JWT', 'SSO', 'MFA', 'RBAC'],
+  'Data and tooling': ['PL/SQL', 'PostgreSQL', 'MySQL', 'Git', 'GitHub', 'GitLab', 'Docker', 'JUnit'],
+  'Ways of working': ['SCRUM', 'Microservices', 'REST APIs', 'Legacy modernization'],
   'Languages': ['Spanish (native)', 'English (B1)'],
 };
 
 export const softSkills = [
-  'Effective communication',
+  'Clear communication',
+  'Problem solving',
   'Teamwork',
-  'Adaptability',
-  'Critical thinking and problem solving',
-  'Time management',
-  'Continuous learning and curiosity',
 ];
 
 export const achievements = [
-  'Modernized critical government systems, migrating backend logic from JavaServer Faces to Spring Boot + Angular with security centralized in Spring Security.',
-  'Implemented Single Sign-On (SSO) with Okta as identity provider (OIDC/SAML), unifying access across multiple internal applications.',
-  'Replaced session-based authentication with a stateless scheme of signed JWTs and refresh tokens over OAuth 2.0.',
-  'Enabled MFA for administrative profiles through Okta policies, reducing the risk of unauthorized access.',
-  'Designed and implemented microservices with Spring Boot, improving response times and scalability.',
-  'Reduced business query cost by optimizing views and procedures in PL/SQL.',
-  'Automated repetitive processes with Python scripts, raising operational efficiency by 25%.',
-  'Led platform migrations (Oracle Forms -> Oracle JET, reports to Java) without interrupting production operations.',
+  'Implemented SSO and MFA with Okta to strengthen and unify access across internal applications.',
+  'Contributed to legacy migrations to Spring Boot + Angular without disrupting operations.',
+  'Automated repetitive processes with Python, improving operational efficiency by 25%.',
+  'Optimized PL/SQL queries and procedures to improve response times.',
 ];
 
 export const education = [
@@ -76,82 +63,66 @@ export const experience = [
     role: 'Software Development Professional',
     period: 'March 2026 – Present',
     description:
-      'Participating in the modernization and migration of a legacy enterprise application built in JavaServer Faces (JSF) to an architecture based on Spring Boot and Angular, with authentication and authorization centralized in Spring Security, OAuth 2.0/OIDC and JWT, plus Single Sign-On (SSO) and MFA integration with Okta. Backend development with Java and Spring, plus implementation/maintenance of Angular frontend components. Collaborating on secure REST APIs, system integration, business logic and evolutive maintenance of critical modules.',
+      'Modernization of a legacy application toward Spring Boot and Angular, with focus on security, integration and operational continuity.',
     highlights: [
-      'Java/Spring Boot backend for critical modules migrated from JSF, with Spring Security as the authentication and authorization layer.',
-      'Okta integration as identity provider (OIDC): SSO across applications and MFA for privileged profiles.',
-      'REST APIs protected with OAuth 2.0 and JWT validation (signature, expiration, claims and scopes) on the resource server.',
-      'Role-based authorization (RBAC) via Spring Security method annotations and filters; Angular guards and interceptors for token handling.',
-      'Angular + TypeScript frontend components, consuming in-house REST APIs.',
-      'Technical requirements analysis and production incident resolution.',
-      'Working under SCRUM with multidisciplinary teams.',
+      'Backend development with Java, Spring Boot and Spring Security for critical modules.',
+      'Okta integration with OAuth 2.0/OIDC, JWT, SSO and MFA.',
+      'Angular development and support for secure REST APIs.',
     ],
-    tech: ['Java', 'Spring Boot', 'Spring Security', 'OAuth 2.0', 'OIDC', 'JWT', 'Okta', 'SSO', 'MFA', 'Angular', 'TypeScript', 'REST', 'Git', 'SCRUM'],
+    tech: ['Java', 'Spring Boot', 'Spring Security', 'Okta', 'OAuth 2.0', 'JWT', 'Angular', 'TypeScript'],
   },
   {
     company: 'MTI Consultoría',
     role: 'Programmer',
     period: 'January 2024 – February 2026',
     description:
-      'Design, development and maintenance of full stack applications. Backend with JavaScript and PL/SQL, optimized queries and stored procedures. Frontend with TypeScript and HTML. REST API integration. Version control with GitLab and SVN. Migration from Oracle Forms to Oracle JET and from Oracle Reports to Java.',
+      'Full stack development and maintenance with functional migrations and database optimization.',
     highlights: [
-      'TypeScript/HTML frontend; JavaScript backend with business logic in PL/SQL.',
-      'Authentication for migrated applications using JWT tokens and OAuth 2.0 flows against the corporate identity provider.',
-      'Unified access through SSO, removing per-application local credentials and centralizing user lifecycle.',
-      'Optimization of stored procedures and views in PL/SQL.',
-      'Migration from Oracle Forms to Oracle JET and from Oracle Reports to Java.',
-      'Unit testing and version control with GitLab/SVN.',
+      'Frontend in TypeScript/HTML and backend in JavaScript with PL/SQL business logic.',
+      'Migration from Oracle Forms to Oracle JET and reports to Java.',
+      'Centralized authentication with JWT, OAuth 2.0 and SSO.',
     ],
-    tech: ['JavaScript', 'TypeScript', 'PL/SQL', 'OAuth 2.0', 'JWT', 'SSO', 'GitLab', 'SVN'],
+    tech: ['JavaScript', 'TypeScript', 'PL/SQL', 'OAuth 2.0', 'JWT', 'GitLab'],
   },
   {
     company: 'Nubelity LLC',
     role: 'Jr. Java Programmer',
     period: 'January 2023 – December 2023',
     description:
-      'Backend and frontend development for multiple clients, microservices implementation and advanced GitHub usage. Work on large-scale projects while maintaining critical functionality.',
+      'Backend and frontend development for multiple clients, including microservices and automation work.',
     highlights: [
       'Automated repetitive tasks with Python, improving operational efficiency by 25%.',
-      'Spring Boot microservices secured with Spring Security and service-to-service JWT validation.',
-      'Third-party API consumption with OAuth 2.0 (client credentials and authorization code).',
-      'Multi-client backend/frontend development: PL/SQL, C#, Java, HTML, Ruby on Rails, Angular.',
-      'Version control management (Git/SVN) on distributed projects.',
+      'Spring Boot microservices secured with Spring Security and JWT.',
+      'Third-party API integrations with OAuth 2.0.',
     ],
-    tech: ['Java', 'Spring Boot', 'Spring Security', 'OAuth 2.0', 'JWT', 'PL/SQL', 'C#', 'HTML', 'TypeScript', 'Python', 'JUnit'],
+    tech: ['Java', 'Spring Boot', 'Spring Security', 'OAuth 2.0', 'JWT', 'Python'],
   },
   {
     company: 'Apsi',
     role: 'Full Stack Developer',
     period: 'January 2022 – January 2023',
     description:
-      'Training on application migration and best practices implementation. Branch and version management on collaborative projects. Development with PL/SQL and C# for data management.',
+      'Work on internal projects focused on best practices, access control and data management.',
     highlights: [
-      'Training on application migration and development and security best practices (OWASP Top 10).',
-      'Implementation of login and role-based access control in internal applications.',
-      'Development in PL/SQL and C# for client data management.',
-      'Branch and version management on collaborative projects (Git/SVN).',
+      'Implemented login and role-based access control.',
+      'Development with PL/SQL and C# for data management.',
+      'Worked with Git/SVN and development best practices.',
     ],
-    tech: ['Java', 'PL/SQL', 'C#', 'HTML', 'TypeScript', 'RBAC', 'OWASP'],
+    tech: ['PL/SQL', 'C#', 'RBAC', 'Git'],
   },
 ];
 
 export const projects = [
   {
-    name: 'Project One',
-    description: 'Short project description: what problem it solves and what stack it was built with.',
-    link: 'https://github.com/David7u79',
+    name: 'Interactive CV + Builder',
+    description: 'Web CV with themes, PDF export and an in-browser editable builder.',
+    link: 'https://David7u79.github.io/curriculum-vitae/',
     tech: ['TypeScript', 'Astro'],
   },
   {
     name: 'Secure API with Spring Security + Okta',
-    description: 'Spring Boot REST API acting as an OAuth 2.0 resource server: Okta login (OIDC), JWT validation, refresh tokens, MFA and role/scope-based authorization; SSO shared with an Angular client.',
+    description: 'REST API with OAuth 2.0/OIDC, JWT, MFA and SSO integrated with an Angular client.',
     link: 'https://github.com/David7u79',
     tech: ['Java', 'Spring Boot', 'Spring Security', 'OAuth 2.0', 'OIDC', 'JWT', 'Okta', 'MFA', 'SSO', 'Angular'],
-  },
-  {
-    name: 'Project Three',
-    description: 'Short project description: what problem it solves and what stack it was built with.',
-    link: 'https://github.com/David7u79',
-    tech: ['Python'],
   },
 ];
